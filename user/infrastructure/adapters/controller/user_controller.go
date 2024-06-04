@@ -34,13 +34,13 @@ func (uc *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := uc.createUserHandler.Handle(userCmd)
+	userCreated, err := uc.createUserHandler.Handle(userCmd)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(userCreated)
 }
 
 func (uc *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
@@ -61,10 +61,6 @@ func (uc *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 func (uc UserController) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
-	/* id, err := strconv.Atoi(idStr)
-	if err != nil {
-		http.Error(w, "invalid id parameter", http.StatusBadRequest)
-	} */
 	user, err := uc.getUserByIDHandler.Handle(queries.GetUserByIDQuery{ID: idStr})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

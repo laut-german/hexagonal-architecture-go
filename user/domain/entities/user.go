@@ -8,3 +8,11 @@ type User struct {
 	Email string
 	Created_At time.Time
 }
+
+func Create(name, email string) *User {
+	return &User{
+		Name:      name,
+		Email:     email,
+		Created_At: time.Now(),
+	}
+}

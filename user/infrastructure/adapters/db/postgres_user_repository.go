@@ -16,10 +16,13 @@ func NewPotgresUserRepository(db *sql.DB) *PostgresUserRepository {
 }
 
 
-func (repository *PostgresUserRepository) Save(user entities.User) error {
-	query := `INSERT INTO users (name, email, created_at) VALUES ($1, $2, $3)`
-	_, err := repository.db.Exec(query, user.Name, user.Email, user.Created_At)
-	return err
+func (repository *PostgresUserRepository) Save(user entities.User) (*entities.User, error) {
+	query := `INSERT INTO users (name, email, created_at) VALUES ($1, $2, $3) RETURNING id`
+	 err := repository.db.QueryRow(query, user.Name, user.Email, user.Created_At).Scan(&user.ID)
+	 if err !=nil {
+		return nil, err
+	 }
+	return &user, nil
 }
 
 func (repository *PostgresUserRepository) Update(user entities.User) error {
