@@ -6,7 +6,7 @@ import (
 )
 
 type GetUserByIDQuery struct {
-	ID int
+	ID string
 }
 
 type GetUserByIDHandler struct {

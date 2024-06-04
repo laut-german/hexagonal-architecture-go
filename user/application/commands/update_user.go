@@ -7,7 +7,7 @@ import (
 
 
 type UpdateUserCommand struct {
-    ID    int
+    ID    string
     Name  string
     Email string
 }

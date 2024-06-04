@@ -6,7 +6,6 @@ import (
 	"hexagonal-architecture-go/user/application/queries"
 	"hexagonal-architecture-go/user/domain/repositories"
 	"net/http"
-	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -62,11 +61,11 @@ func (uc *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 func (uc UserController) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
-	id, err := strconv.Atoi(idStr)
+	/* id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "invalid id parameter", http.StatusBadRequest)
-	}
-	user, err := uc.getUserByIDHandler.Handle(queries.GetUserByIDQuery{ID: id})
+	} */
+	user, err := uc.getUserByIDHandler.Handle(queries.GetUserByIDQuery{ID: idStr})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

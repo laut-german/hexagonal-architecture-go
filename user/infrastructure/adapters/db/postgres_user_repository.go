@@ -17,8 +17,8 @@ func NewPotgresUserRepository(db *sql.DB) *PostgresUserRepository {
 
 
 func (repository *PostgresUserRepository) Save(user entities.User) error {
-	query := `INSERT INTO users (name, email) VALUES ($1, $2)`
-	_, err := repository.db.Exec(query, user.Name, user.Email)
+	query := `INSERT INTO users (name, email, created_at) VALUES ($1, $2, $3)`
+	_, err := repository.db.Exec(query, user.Name, user.Email, user.Created_At)
 	return err
 }
 
@@ -28,7 +28,7 @@ func (repository *PostgresUserRepository) Update(user entities.User) error {
 	return err
 }
 
-func (repository *PostgresUserRepository) FindByID(id int) (*entities.User, error) {
+func (repository *PostgresUserRepository) FindByID(id string) (*entities.User, error) {
 	query := `SELECT id, name, email FROM  users  WHERE id = $1`
 	row :=  repository.db.QueryRow(query, id)
 	var user entities.User
