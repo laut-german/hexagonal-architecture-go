@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"database/sql"
-	UserController "hexagonal-architecture-go/user/infrastructure/adapters/controller"
-	UserRepository "hexagonal-architecture-go/user/infrastructure/adapters/db"
+	UserController "hexagonal-architecture-go/internal/user/infrastructure/adapters/controller"
+	UserRepository "hexagonal-architecture-go/internal/user/infrastructure/adapters/db"
 	"log"
 	"net/http"
 	"os"
@@ -14,9 +14,9 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/lib/pq"
 
-	CartController "hexagonal-architecture-go/shopping-cart/infrastructure/adapters/controller"
-	CartRepository "hexagonal-architecture-go/shopping-cart/infrastructure/adapters/db"
-	CartQueue "hexagonal-architecture-go/shopping-cart/infrastructure/adapters/queue"
+	CartController "hexagonal-architecture-go/internal/shopping-cart/infrastructure/adapters/controller"
+	CartRepository "hexagonal-architecture-go/internal/shopping-cart/infrastructure/adapters/db"
+	CartQueue "hexagonal-architecture-go/internal/shopping-cart/infrastructure/adapters/queue"
 
 	"github.com/rabbitmq/amqp091-go"
 )
@@ -33,11 +33,11 @@ func main() {
 	userPostgresController := UserController.NewUserController(userPostgresRepo)
 
 	// RabbitMQ setup
-    channel, queueName, err := setupRabbitMQ()
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer channel.Close()
+	channel, queueName, err := setupRabbitMQ()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer channel.Close()
 
 	cartRepo := CartRepository.NewPostgresCartRepository(postgresDB)
 	cartConsumer := CartQueue.NewRabbitMQConsumer(channel, queueName, cartRepo)
@@ -71,36 +71,35 @@ func main() {
 		r.Post("/add-item", cartController.AddItemToCart)
 		r.Post("/remove-item", cartController.RemoveItemFromCart)
 		r.Get("/user/{id}", cartController.GetCartByUserID)
-        r.Get("/list-items/user/{id}", cartController.ListCartItems)
+		r.Get("/list-items/user/{id}", cartController.ListCartItems)
 	})
 	log.Default().Println("Listening at port 8000")
 	log.Fatal(http.ListenAndServe(":8000", r))
 }
 
-
 func setupRabbitMQ() (*amqp091.Channel, string, error) {
-    conn, err := amqp091.Dial("amqp://guest:guest@localhost:5672/")
-    if err != nil {
-        return nil, "", err
-    }
+	conn, err := amqp091.Dial("amqp://guest:guest@localhost:5672/")
+	if err != nil {
+		return nil, "", err
+	}
 
-    channel, err := conn.Channel()
-    if err != nil {
-        return nil, "", err
-    }
+	channel, err := conn.Channel()
+	if err != nil {
+		return nil, "", err
+	}
 
-    queueName := "cart_queue"
-    _, err = channel.QueueDeclare(
-        queueName,
-        true,  // durable
-        false, // delete when unused
-        false, // exclusive
-        false, // no-wait
-        nil,   // arguments
-    )
-    if err != nil {
-        return nil, "", err
-    }
+	queueName := "cart_queue"
+	_, err = channel.QueueDeclare(
+		queueName,
+		true,  // durable
+		false, // delete when unused
+		false, // exclusive
+		false, // no-wait
+		nil,   // arguments
+	)
+	if err != nil {
+		return nil, "", err
+	}
 
-    return channel, queueName, nil
+	return channel, queueName, nil
 }
