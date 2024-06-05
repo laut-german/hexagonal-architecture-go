@@ -46,6 +46,22 @@ func (repository *PostgresUserRepository) FindByID(id string) (*entities.User, e
 }
 
 
+func (repository *PostgresUserRepository) FindByEmail(email string) (*entities.User, error) {
+	query := `SELECT id, name, email, created_at FROM users WHERE email = $1`
+	row := repository.db.QueryRow(query, email)
+	var user entities.User
+	if err:= row.Scan(&user.ID, &user.Name, &user.Email, &user.Created_At); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+
 func (repository *PostgresUserRepository) List() ([]entities.User, error) {
     query := `SELECT id, name, email FROM users`
     rows, err := repository.db.Query(query)

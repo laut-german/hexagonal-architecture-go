@@ -2,12 +2,12 @@ package controller
 
 import (
 	"encoding/json"
+	"net/http"
+	"github.com/go-chi/chi/v5"
 	"hexagonal-architecture-go/user/application/commands"
 	"hexagonal-architecture-go/user/application/queries"
 	"hexagonal-architecture-go/user/domain/ports/repositories"
-	"net/http"
-
-	"github.com/go-chi/chi/v5"
+	userDomainErrors "hexagonal-architecture-go/user/domain/errors"
 )
 
 type UserController struct {
@@ -36,6 +36,10 @@ func (uc *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	userCreated, err := uc.createUserHandler.Handle(userCmd)
 	if err != nil {
+		if userDomainErrors.IsUserAlreadyExistsError(err) {
+			http.Error(w, "Invalid email", http.StatusBadRequest)
+			return
+		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
