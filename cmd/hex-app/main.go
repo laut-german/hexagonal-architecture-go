@@ -33,19 +33,11 @@ func main() {
 	userPostgresController := UserController.NewUserController(userPostgresRepo)
 
 	// RabbitMQ setup
-	conn, err := amqp091.Dial("amqp://guest:guest@localhost:5672/")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer conn.Close()
-
-	channel, err := conn.Channel()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer channel.Close()
-
-	queueName := "cart_queue"
+    channel, queueName, err := setupRabbitMQ()
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer channel.Close()
 
 	cartRepo := CartRepository.NewPostgresCartRepository(postgresDB)
 	cartConsumer := CartQueue.NewRabbitMQConsumer(channel, queueName, cartRepo)
@@ -78,9 +70,37 @@ func main() {
 	r.Route("/cart", func(r chi.Router) {
 		r.Post("/add-item", cartController.AddItemToCart)
 		r.Post("/remove-item", cartController.RemoveItemFromCart)
-		r.Get("/get", cartController.GetCartByUserID)
-		r.Get("/list-items", cartController.ListCartItems)
+		r.Get("/user/{id}", cartController.GetCartByUserID)
+        r.Get("/list-items/user/{id}", cartController.ListCartItems)
 	})
 	log.Default().Println("Listening at port 8000")
 	log.Fatal(http.ListenAndServe(":8000", r))
+}
+
+
+func setupRabbitMQ() (*amqp091.Channel, string, error) {
+    conn, err := amqp091.Dial("amqp://guest:guest@localhost:5672/")
+    if err != nil {
+        return nil, "", err
+    }
+
+    channel, err := conn.Channel()
+    if err != nil {
+        return nil, "", err
+    }
+
+    queueName := "cart_queue"
+    _, err = channel.QueueDeclare(
+        queueName,
+        true,  // durable
+        false, // delete when unused
+        false, // exclusive
+        false, // no-wait
+        nil,   // arguments
+    )
+    if err != nil {
+        return nil, "", err
+    }
+
+    return channel, queueName, nil
 }
