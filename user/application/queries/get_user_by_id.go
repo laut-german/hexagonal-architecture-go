@@ -2,7 +2,7 @@ package queries
 
 import (
 	"hexagonal-architecture-go/user/domain/entities"
-	"hexagonal-architecture-go/user/domain/repositories"
+	"hexagonal-architecture-go/user/domain/ports/repositories"
 )
 
 type GetUserByIDQuery struct {

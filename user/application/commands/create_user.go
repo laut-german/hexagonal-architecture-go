@@ -3,7 +3,7 @@ package commands
 import (
 	"hexagonal-architecture-go/user/application/responses"
 	"hexagonal-architecture-go/user/domain/entities"
-	"hexagonal-architecture-go/user/domain/repositories"
+	"hexagonal-architecture-go/user/domain/ports/repositories"
 )
 
 type CreateUserCommand struct {

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"hexagonal-architecture-go/user/application/commands"
 	"hexagonal-architecture-go/user/application/queries"
-	"hexagonal-architecture-go/user/domain/repositories"
+	"hexagonal-architecture-go/user/domain/ports/repositories"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
