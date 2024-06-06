@@ -1,12 +1,15 @@
 # Hexagonal Architecture Go Application
 
+![Go Version](https://img.shields.io/badge/go-%3E%3D1.22-blue)
+![License: GPL v3.0](https://img.shields.io/badge/license-GPL%20v3.0-red)
+
 This repository contains a Go application following the Hexagonal Architecture pattern. Below are the steps to set up and run the application locally.
 
 ## Prerequisites
 
 - Docker
 - Docker Compose
-- Go 1.16 or higher
+- Go 1.22.3 or higher
 
 ## Getting Started
 
@@ -103,63 +106,58 @@ The application will start and listen on port 8000.
 │   ├── 000001_init_schema.down.sql
 │   └── 000001_init_schema.up.sql
 ├── internal
-│   ├── shopping-cart
-│   │   ├── application
-│   │   │   ├── commands
-│   │   │   │   ├── add-item-to-cart.go
-│   │   │   │   └── remove-item-from-cart.go
-│   │   │   ├── queries
-│   │   │   │   ├── get_cart_by_user_id.go
-│   │   │   │   └── list_cart_items.go
-│   │   │   └── responses
-│   │   │       └── cart_response.go
-│   │   ├── domain
-│   │   │   ├── entities
-│   │   │   │   └── cart.go
-│   │   │   └── ports
-│   │   │       ├── queue
-│   │   │       │   ├── queue_consumer.go
-│   │   │       │   └── queue_producer.go
-│   │   │       └── repositories
-│   │   │           └── cart_repository.go
-│   │   └── infrastructure
-│   │       └── adapters
-│   │           ├── controller
-│   │           │   └── shopping_cart_controller.go
-│   │           ├── db
-│   │           │   └── postgres_cart_repository.go
-│   │           └── queue
-│   │               ├── rabbitmq_consumer.go
-│   │               └── rabbitmq_producer.go
-│   ├── users
-│   │   ├── application
-│   │   │   ├── commands
-│   │   │   │   ├── create_user.go
-│   │   │   │   └── update_user.go
-│   │   │   ├── queries
-│   │   │   │   ├── get_user_by_id.go
-│   │   │   │   └── list_users.go
-│   │   │   └── responses
-│   │   │       └── create_user.response.go
-│   │   ├── domain
-│   │   │   ├── entities
-│   │   │   │   └── user.go
-│   │   │   ├── errors
-│   │   │   │   └── user_already_exists.go
-│   │   │   └── ports
-│   │   │       └── repositories
-│   │   │           └── user_repository.go
-│   │   └── infrastructure
-│   │       └── adapters
-│   │           ├── controller
-│   │           │   └── user_controller.go
-│   │           └── db
-│   │               └── postgres_user_repository.go
-└── pkg
-    ├── util
-    │   └── string_util.go
-    ├── middleware
-    │   └── logging.go
+   ├── shopping-cart
+   │   ├── application
+   │   │   ├── commands
+   │   │   │   ├── add-item-to-cart.go
+   │   │   │   └── remove-item-from-cart.go
+   │   │   ├── queries
+   │   │   │   ├── get_cart_by_user_id.go
+   │   │   │   └── list_cart_items.go
+   │   │   └── responses
+   │   │       └── cart_response.go
+   │   ├── domain
+   │   │   ├── entities
+   │   │   │   └── cart.go
+   │   │   └── ports
+   │   │       ├── queue
+   │   │       │   ├── queue_consumer.go
+   │   │       │   └── queue_producer.go
+   │   │       └── repositories
+   │   │           └── cart_repository.go
+   │   └── infrastructure
+   │       └── adapters
+   │           ├── controller
+   │           │   └── shopping_cart_controller.go
+   │           ├── db
+   │           │   └── postgres_cart_repository.go
+   │           └── queue
+   │               ├── rabbitmq_consumer.go
+   │               └── rabbitmq_producer.go
+   ├── users
+      ├── application
+      │   ├── commands
+      │   │   ├── create_user.go
+      │   │   └── update_user.go
+      │   ├── queries
+      │   │   ├── get_user_by_id.go
+      │   │   └── list_users.go
+      │   └── responses
+      │       └── create_user.response.go
+      ├── domain
+      │   ├── entities
+      │   │   └── user.go
+      |            └── postgres_user_repository.go
+      │   ├── errors
+      │   │   └── user_already_exists.go
+      │   └── ports
+      │       └── repositories
+      │           └── user_repository.go
+      └── infrastructure
+          └── adapters
+              │   └── user_controller.go
+              ├── controller
+              └── db
 ```
 
 ## Running the Application
