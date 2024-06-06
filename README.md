@@ -3,6 +3,13 @@
 ![Go Version](https://img.shields.io/badge/go-%3E%3D1.22-blue)
 ![License: GPL v3.0](https://img.shields.io/badge/license-GPL%20v3.0-red)
 
+## Hexagonal Architecture
+
+Hexagonal architecture, also known as ports and adapters architecture, is a design pattern used in software development. This architecture promotes the separation of concerns and allows the application to be independent from external agencies, such as user interfaces and databases.
+
+For more information, you can read about hexagonal architecture on [Wikipedia](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)).
+
+## Description
 This repository contains a Go application following the Hexagonal Architecture pattern. Below are the steps to set up and run the application locally.
 
 ## Prerequisites
