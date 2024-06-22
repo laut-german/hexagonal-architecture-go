@@ -23,8 +23,7 @@ This repository contains a Go application following the Hexagonal Architecture p
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/yourrepository.git
-cd yourrepository
+git clone git@github.com:laut-german/hexagonal-architecture-go.git
 ```
 
 ### 2. Set Up Docker Containers
