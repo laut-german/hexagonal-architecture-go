@@ -12,18 +12,18 @@ import (
 )
 
 type UserController struct {
-	createUserHandler  *commands.CreateUserHandler
-	updateUserHandler  *commands.UpdateUserHandler
-	getUserByIDHandler *queries.GetUserByIDHandler
-	listUsersHandler   *queries.ListUsersHandler
+	createUserCommandHandler *commands.CreateUserHandler
+	updateUserCommandHandler *commands.UpdateUserHandler
+	getUserByIDQueryHandler  *queries.GetUserByIDHandler
+	listUsersQueryHandler    *queries.ListUsersHandler
 }
 
 func NewUserController(repo repositories.UserRepository) *UserController {
 	return &UserController{
-		createUserHandler:  commands.NewCreateUserHandler(repo),
-		updateUserHandler:  commands.NewUpdateUserHandler(repo),
-		getUserByIDHandler: queries.NewGetUserByIDHandler(repo),
-		listUsersHandler:   queries.NewListUsersHandler(repo),
+		createUserCommandHandler: commands.NewCreateUserHandler(repo),
+		updateUserCommandHandler: commands.NewUpdateUserHandler(repo),
+		getUserByIDQueryHandler:  queries.NewGetUserByIDHandler(repo),
+		listUsersQueryHandler:    queries.NewListUsersHandler(repo),
 	}
 
 }
@@ -35,7 +35,7 @@ func (uc *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userCreated, err := uc.createUserHandler.Handle(userCmd)
+	userCreated, err := uc.createUserCommandHandler.Handle(userCmd)
 	if err != nil {
 		if userDomainErrors.IsUserAlreadyExistsError(err) {
 			http.Error(w, "Invalid email", http.StatusBadRequest)
@@ -55,7 +55,7 @@ func (uc *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := uc.updateUserHandler.Handle(userCmd)
+	err := uc.updateUserCommandHandler.Handle(userCmd)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -66,7 +66,7 @@ func (uc *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 func (uc UserController) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
-	user, err := uc.getUserByIDHandler.Handle(queries.GetUserByIDQuery{ID: idStr})
+	user, err := uc.getUserByIDQueryHandler.Handle(queries.GetUserByIDQuery{ID: idStr})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -80,7 +80,7 @@ func (uc UserController) GetUserByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (uc *UserController) ListUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := uc.listUsersHandler.Handle(queries.ListUsersQuery{})
+	users, err := uc.listUsersQueryHandler.Handle(queries.ListUsersQuery{})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
