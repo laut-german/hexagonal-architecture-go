@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"hexagonal-architecture-go/internal/user/domain/entities"
 	"hexagonal-architecture-go/internal/user/domain/ports/repositories"
 )
 
@@ -20,10 +19,11 @@ func NewUpdateUserHandler(repo repositories.UserRepository) *UpdateUserHandler {
 }
 
 func (commandHandler *UpdateUserHandler) Handle(cmd UpdateUserCommand) error {
-	user := entities.User{
-		ID:    cmd.ID,
-		Name:  cmd.Name,
-		Email: cmd.Email,
+	user, err := commandHandler.repo.FindByID(cmd.ID)
+	if err != nil {
+		return err
 	}
-	return commandHandler.repo.Update(user)
+	user.Update(cmd.Name, cmd.Email)
+	return commandHandler.repo.Update(*user)
+	
 }

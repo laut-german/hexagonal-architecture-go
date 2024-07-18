@@ -16,3 +16,13 @@ func Create(name, email string) *User {
 		Created_At: time.Now(),
 	}
 }
+
+func (u *User) Update(name, email string) {
+	// Aqui se puede aplicar la logica de negocio necesaria que se necesite para un update
+	if name != "" {
+		u.Name = name
+	}
+	if email != "" {
+		u.Email = email
+	}
+}
